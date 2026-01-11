@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Tennis - Tournament Scheduler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .demo-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .tennis-ball {
+            font-size: 60px;
+            margin: 20px 0;
+            display: inline-block;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .status {
+            color: #28a745;
+            font-size: 1.2em;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎾 Winter Tennis</h1>
+        <p class="subtitle">Tournament Scheduler Demo</p>
+
+        <div class="tennis-ball">🎾</div>
+
+        <div class="status" id="status">GitHub Pages is working!</div>
+
+        <div class="demo-section">
+            <h2 style="margin-bottom: 20px; color: #333;">Interactive Demo</h2>
+            <p style="margin-bottom: 15px; color: #666;">Click to simulate a tennis match:</p>
+
+            <div class="score" id="score">0 - 0</div>
+
+            <button onclick="scorePoint('player1')">Player 1 Scores</button>
+            <button onclick="scorePoint('player2')">Player 2 Scores</button>
+            <button onclick="resetMatch()">Reset Match</button>
+        </div>
+
+        <div class="info">
+            <strong>✓ Success!</strong><br>
+            This page is running HTML and JavaScript.<br>
+            Ready to build the tournament scheduler!
+        </div>
+    </div>
+
+    <script src="demo.js"></script>
+</body>
+</html>
