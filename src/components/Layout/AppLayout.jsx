@@ -9,10 +9,14 @@ import BaanschemaTab from '../Baanschema/BaanschemaTab'
 import UitslagTab from '../Uitslag/UitslagTab'
 import SpelersTab from '../Spelers/SpelersTab'
 import StandTab from '../Stand/StandTab'
+import { SelectedSundayProvider } from '../../contexts/SelectedSundayContext'
+import { useCurrentSeason, useSundays } from '../../hooks/useSundays'
 
 export default function AppLayout() {
   const { isAuthenticated, logout } = useAuth()
   const [activeTab, setActiveTab] = useState(0)
+  const { seasonYear } = useCurrentSeason()
+  const sundays = useSundays(seasonYear)
 
   if (!isAuthenticated) {
     return <GitHubAuth />
@@ -36,23 +40,25 @@ export default function AppLayout() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            🎾 Winter Tennis Planning
-          </Typography>
-          <IconButton color="inherit" onClick={logout} title="Uitloggen">
-            <LogoutIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+    <SelectedSundayProvider sundays={sundays}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              🎾 Winter Tennis Planning
+            </Typography>
+            <IconButton color="inherit" onClick={logout} title="Uitloggen">
+              <LogoutIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
 
-      <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <Box sx={{ flexGrow: 1, padding: 3 }}>
-        {renderTabContent()}
+        <Box sx={{ flexGrow: 1, padding: 3 }}>
+          {renderTabContent()}
+        </Box>
       </Box>
-    </Box>
+    </SelectedSundayProvider>
   )
 }

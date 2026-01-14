@@ -17,17 +17,19 @@ import {
   IconButton
 } from '@mui/material'
 import CasinoIcon from '@mui/icons-material/Casino'
+import WhatsAppIcon from '@mui/icons-material/WhatsApp'
 import { useGitHub } from '../../hooks/useGitHub'
-import { useCurrentSeason, useSundays, useSelectedSunday } from '../../hooks/useSundays'
+import { useCurrentSeason, useSundays } from '../../hooks/useSundays'
+import { useSharedSelectedSunday } from '../../contexts/SelectedSundayContext'
 import { formatDate, formatDateKey } from '../../services/dateUtils'
-import { SCHEMAS, getRandomSchema, generateMatches, canGenerateSchema } from '../../services/schemaGenerator'
+import { getSchemas, getRandomSchema, generateMatches, canGenerateSchema } from '../../services/schemaGenerator'
 import { orderParticipantsByRank } from '../../services/rankingUtils'
 
 export default function BaanschemaTab() {
   const github = useGitHub()
   const { seasonYear } = useCurrentSeason()
   const sundays = useSundays(seasonYear)
-  const { selectedDate, setSelectedDate } = useSelectedSunday(sundays)
+  const { selectedDate, setSelectedDate } = useSharedSelectedSunday()
 
   const [scheduleData, setScheduleData] = useState(null)
   const [loadingSchedule, setLoadingSchedule] = useState(false)
@@ -115,7 +117,7 @@ export default function BaanschemaTab() {
   const handleRoll = () => {
     setRolling(true)
     setTimeout(() => {
-      const random = getRandomSchema()
+      const random = getRandomSchema(rankedParticipants.length)
       setSelectedSchema(random)
       setRolling(false)
     }, 500)
@@ -148,6 +150,36 @@ export default function BaanschemaTab() {
     setSavingSchedule(false)
   }
 
+  const handleSendWhatsApp = () => {
+    const SCHEMAS = getSchemas(rankedParticipants.length)
+
+    let message = `🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}\n\n`
+
+    Object.keys(SCHEMAS).forEach(schemaKey => {
+      const schema = SCHEMAS[schemaKey]
+      message += `${schema.name} - ${schema.number}\n`
+
+      schema.matches.forEach(match => {
+        const team1 = match.team1.map(rank => {
+          const player = rankedParticipants[rank - 1]
+          return player ? player.name : `#${rank}`
+        }).join(' - ')
+
+        const team2 = match.team2.map(rank => {
+          const player = rankedParticipants[rank - 1]
+          return player ? player.name : `#${rank}`
+        }).join(' - ')
+
+        message += `Baan ${match.court}: ${team1} tegen ${team2}\n`
+      })
+
+      message += '\n'
+    })
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
   if (!selectedDate) {
     return (
       <Box display="flex" justifyContent="center" p={4}>
@@ -159,6 +191,7 @@ export default function BaanschemaTab() {
   const participants = scheduleData?.participants || []
   const rankedParticipants = orderParticipantsByRank(participants, players, allResults)
   const canGenerate = canGenerateSchema(rankedParticipants)
+  const SCHEMAS = getSchemas(rankedParticipants.length)
 
   return (
     <Box>
@@ -189,7 +222,7 @@ export default function BaanschemaTab() {
         </Box>
       ) : !canGenerate ? (
         <Alert severity="warning">
-          Selecteer eerst exact 12 deelnemers op de Deelnemers tab om een baanschema te kunnen maken.
+          Selecteer een even aantal deelnemers (4, 6, 8, 10 of 12) op de Deelnemers tab om een baanschema te kunnen maken.
           (Momenteel: {rankedParticipants.length} spelers)
         </Alert>
       ) : (
@@ -198,16 +231,33 @@ export default function BaanschemaTab() {
             <Typography variant="h6" gutterBottom>
               Kies een Baanschema
             </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={rolling ? <CircularProgress size={20} color="inherit" /> : <CasinoIcon />}
-              onClick={handleRoll}
-              disabled={rolling}
-              sx={{ mb: 2 }}
-            >
-              {rolling ? 'Gooien...' : 'Gooi de Dobbelsteen'}
-            </Button>
+            <Box display="flex" gap={2} justifyContent="center" flexWrap="wrap">
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={rolling ? <CircularProgress size={20} color="inherit" /> : <CasinoIcon />}
+                onClick={handleRoll}
+                disabled={rolling}
+              >
+                {rolling ? 'Gooien...' : 'Gooi de Dobbelsteen'}
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<WhatsAppIcon />}
+                onClick={handleSendWhatsApp}
+                sx={{
+                  color: '#25D366',
+                  borderColor: '#25D366',
+                  '&:hover': {
+                    borderColor: '#128C7E',
+                    backgroundColor: 'rgba(37, 211, 102, 0.04)'
+                  }
+                }}
+              >
+                Deel via WhatsApp
+              </Button>
+            </Box>
 
             {selectedSchema && (
               <Alert severity="success" sx={{ mt: 2 }}>

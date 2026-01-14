@@ -10,8 +10,10 @@ import {
   TableHead,
   TableRow,
   CircularProgress,
-  Alert
+  Alert,
+  Button
 } from '@mui/material'
+import WhatsAppIcon from '@mui/icons-material/WhatsApp'
 import { useGitHubData, useGitHub } from '../../hooks/useGitHub'
 import { useCurrentSeason, useSundays } from '../../hooks/useSundays'
 import { calculateStandings, shouldBeBold } from '../../services/rankingUtils'
@@ -74,11 +76,44 @@ export default function StandTab() {
     ? Math.max(...standings.map(s => s.gamesPlayed))
     : 0
 
+  const handleSendWhatsApp = () => {
+    let message = `🎾 Stand Winter Tennis ${seasonYear}/${seasonYear + 1}\n\n`
+
+    standings.forEach((player, index) => {
+      const isBold = shouldBeBold(player, standings)
+      const prefix = isBold ? '*' : ''
+      const suffix = isBold ? '*' : ''
+      message += `${prefix}${index + 1}. ${player.name} - ${player.gamesPlayed} wed - ${player.totalPoints} pnt - ${player.average.toFixed(2)} gem${suffix}\n`
+    })
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>
-        Stand
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h5">
+          Stand
+        </Typography>
+        {standings.length > 0 && (
+          <Button
+            variant="outlined"
+            startIcon={<WhatsAppIcon />}
+            onClick={handleSendWhatsApp}
+            sx={{
+              color: '#25D366',
+              borderColor: '#25D366',
+              '&:hover': {
+                borderColor: '#128C7E',
+                backgroundColor: 'rgba(37, 211, 102, 0.04)'
+              }
+            }}
+          >
+            Deel via WhatsApp
+          </Button>
+        )}
+      </Box>
 
       <Paper sx={{ mt: 2 }}>
         <TableContainer>

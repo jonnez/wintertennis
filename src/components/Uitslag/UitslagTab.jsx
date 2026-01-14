@@ -16,16 +16,17 @@ import {
   CardContent
 } from '@mui/material'
 import { useGitHub } from '../../hooks/useGitHub'
-import { useCurrentSeason, useSundays, useSelectedSunday } from '../../hooks/useSundays'
+import { useCurrentSeason, useSundays } from '../../hooks/useSundays'
+import { useSharedSelectedSunday } from '../../contexts/SelectedSundayContext'
 import { formatDate, formatDateKey } from '../../services/dateUtils'
-import { SCHEMAS, generateMatches } from '../../services/schemaGenerator'
+import { getSchemas, generateMatches } from '../../services/schemaGenerator'
 import { orderParticipantsByRank } from '../../services/rankingUtils'
 
 export default function UitslagTab() {
   const github = useGitHub()
   const { seasonYear } = useCurrentSeason()
   const sundays = useSundays(seasonYear)
-  const { selectedDate, setSelectedDate } = useSelectedSunday(sundays)
+  const { selectedDate, setSelectedDate } = useSharedSelectedSunday()
 
   const [scheduleData, setScheduleData] = useState(null)
   const [resultsData, setResultsData] = useState(null)
@@ -135,7 +136,8 @@ export default function UitslagTab() {
       const participants = scheduleData.participants || []
       const rankedParticipants = orderParticipantsByRank(participants, players, allResults)
 
-      if (rankedParticipants.length === 12) {
+      if (rankedParticipants.length >= 4 && rankedParticipants.length <= 12 && rankedParticipants.length % 2 === 0) {
+        const SCHEMAS = getSchemas(rankedParticipants.length)
         const schema = SCHEMAS[scheduleData.selectedSchema]
         if (schema) {
           const generatedMatches = schema.matches.map(match => {
@@ -280,7 +282,12 @@ export default function UitslagTab() {
       </FormControl>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Geselecteerd schema: <strong>{SCHEMAS[scheduleData.selectedSchema]?.name}</strong>
+        Geselecteerd schema: <strong>{(() => {
+          const participants = scheduleData.participants || []
+          const rankedParticipants = orderParticipantsByRank(participants, players, allResults)
+          const SCHEMAS = getSchemas(rankedParticipants.length)
+          return SCHEMAS[scheduleData.selectedSchema]?.name
+        })()}</strong>
         <br />
         Voer de punten in (0, 1, of 2 per team). Totaal per wedstrijd moet 2 zijn.
       </Alert>
