@@ -21,20 +21,13 @@ export function useCurrentSeason() {
     }
   }, [activeSeason, seasonYear])
 
-  // Parse year from season string (could be "demo", "2025", etc.)
-  const parseSeasonYear = (season) => {
-    if (!season) return null
-    const parsed = parseInt(season)
-    return isNaN(parsed) ? null : parsed
-  }
-
-  const yearNum = parseSeasonYear(seasonYear)
-  const seasonLabel = yearNum ? `${yearNum}/${yearNum + 1}` : seasonYear
+  // Convert to number for calculations
+  const yearNum = seasonYear ? parseInt(seasonYear) : null
 
   return {
-    seasonYear,
+    seasonYear: yearNum,
     setSeasonYear,
-    seasonLabel,
+    seasonLabel: yearNum ? `${yearNum}/${yearNum + 1}` : '',
     loading
   }
 }

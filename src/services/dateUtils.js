@@ -5,15 +5,9 @@ import { nl } from 'date-fns/locale'
 export function getWinterSundays(year) {
   const sundays = []
 
-  // If year is not a number (e.g., "demo"), use current season year
-  let startYear
-  if (typeof year === 'string' && isNaN(parseInt(year))) {
-    startYear = getCurrentSeasonYear()
-  } else {
-    startYear = typeof year === 'number' ? year : parseInt(year)
-  }
-
-  const endYear = startYear + 1
+  // Start year (e.g., 2025 means season 2025-2026)
+  const startYear = year
+  const endYear = year + 1
 
   // September through December of start year
   for (let month = 8; month <= 11; month++) {
