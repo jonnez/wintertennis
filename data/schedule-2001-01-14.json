@@ -1,5 +1,5 @@
-  {
-    "date": "2025-01-05",
+{
+    "date": "2001-01-14",
     "participants": [
       "player-001",
       "player-002",
@@ -14,6 +14,6 @@
       "player-011",
       "player-012"
     ],
-    "selectedSchema": "rood",
-    "cateringBy": "player-003"
-  }
+    "selectedSchema": "groen",
+    "cateringBy": "player-004"
+}
