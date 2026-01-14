@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
-import { getWinterSundays, getNextSunday, getCurrentSeasonYear } from '../services/dateUtils'
+import { getWinterSundays, getNextSunday } from '../services/dateUtils'
+import { useConfig } from './useConfig'
 
 export function useSundays(year) {
   const sundays = useMemo(() => {
@@ -11,12 +12,30 @@ export function useSundays(year) {
 }
 
 export function useCurrentSeason() {
-  const [seasonYear, setSeasonYear] = useState(getCurrentSeasonYear())
+  const { activeSeason, loading } = useConfig()
+  const [seasonYear, setSeasonYear] = useState(activeSeason)
+
+  useEffect(() => {
+    if (activeSeason && !seasonYear) {
+      setSeasonYear(activeSeason)
+    }
+  }, [activeSeason, seasonYear])
+
+  // Parse year from season string (could be "demo", "2025", etc.)
+  const parseSeasonYear = (season) => {
+    if (!season) return null
+    const parsed = parseInt(season)
+    return isNaN(parsed) ? null : parsed
+  }
+
+  const yearNum = parseSeasonYear(seasonYear)
+  const seasonLabel = yearNum ? `${yearNum}/${yearNum + 1}` : seasonYear
 
   return {
     seasonYear,
     setSeasonYear,
-    seasonLabel: `${seasonYear}/${seasonYear + 1}`
+    seasonLabel,
+    loading
   }
 }
 
