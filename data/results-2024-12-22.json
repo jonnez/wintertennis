@@ -1,0 +1,38 @@
+{
+    "date": "2024-12-22",
+    "matches": [
+      {
+        "court": 1,
+        "team1": {
+          "players": ["player-001", "player-004"],
+          "points": 2
+        },
+        "team2": {
+          "players": ["player-002", "player-003"],
+          "points": 0
+        }
+      },
+      {
+        "court": 2,
+        "team1": {
+          "players": ["player-005", "player-012"],
+          "points": 1
+        },
+        "team2": {
+          "players": ["player-007", "player-010"],
+          "points": 1
+        }
+      },
+      {
+        "court": 3,
+        "team1": {
+          "players": ["player-006", "player-011"],
+          "points": 2
+        },
+        "team2": {
+          "players": ["player-008", "player-009"],
+          "points": 0
+        }
+      }
+    ]
+}

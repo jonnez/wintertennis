@@ -1,0 +1,38 @@
+  {
+    "date": "2025-01-05",
+    "matches": [
+      {
+        "court": 1,
+        "team1": {
+          "players": ["player-001", "player-008"],
+          "points": 2
+        },
+        "team2": {
+          "players": ["player-003", "player-006"],
+          "points": 0
+        }
+      },
+      {
+        "court": 2,
+        "team1": {
+          "players": ["player-002", "player-007"],
+          "points": 1
+        },
+        "team2": {
+          "players": ["player-004", "player-005"],
+          "points": 1
+        }
+      },
+      {
+        "court": 3,
+        "team1": {
+          "players": ["player-009", "player-012"],
+          "points": 2
+        },
+        "team2": {
+          "players": ["player-010", "player-011"],
+          "points": 0
+        }
+      }
+    ]
+  }
