@@ -150,9 +150,89 @@ export default function BaanschemaTab() {
     setSavingSchedule(false)
   }
 
-  const handleSendWhatsApp = () => {
+  const handleSendWhatsApp = async () => {
     const SCHEMAS = getSchemas(rankedParticipants.length)
 
+    // Check if Web Share API with files is supported
+    if (navigator.share && navigator.canShare) {
+      try {
+        // Create canvas to generate image
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+
+        // Set canvas size
+        const padding = 40
+        const schemaHeight = 200
+        const schemaCount = Object.keys(SCHEMAS).length
+        canvas.width = 800
+        canvas.height = padding * 2 + schemaCount * schemaHeight + 100
+
+        // White background
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+        // Title
+        ctx.fillStyle = '#000000'
+        ctx.font = 'bold 32px Arial'
+        ctx.fillText(`🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}`, padding, padding + 30)
+
+        let yOffset = padding + 80
+
+        // Draw each schema
+        Object.keys(SCHEMAS).forEach((schemaKey, index) => {
+          const schema = SCHEMAS[schemaKey]
+
+          // Schema box with color
+          ctx.fillStyle = schema.color
+          ctx.fillRect(padding, yOffset, canvas.width - padding * 2, schemaHeight - 20)
+
+          // Schema title
+          ctx.fillStyle = schema.textColor
+          ctx.font = 'bold 24px Arial'
+          ctx.fillText(`${schema.name} - ${schema.number}`, padding + 20, yOffset + 35)
+
+          // Matches
+          ctx.font = '18px Arial'
+          let matchY = yOffset + 70
+          schema.matches.forEach(match => {
+            const team1 = match.team1.map(rank => {
+              const player = rankedParticipants[rank - 1]
+              return player ? player.name : `#${rank}`
+            }).join(' - ')
+
+            const team2 = match.team2.map(rank => {
+              const player = rankedParticipants[rank - 1]
+              return player ? player.name : `#${rank}`
+            }).join(' - ')
+
+            ctx.fillText(`Baan ${match.court}: ${team1} tegen ${team2}`, padding + 20, matchY)
+            matchY += 30
+          })
+
+          yOffset += schemaHeight
+        })
+
+        // Convert canvas to blob
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
+
+        const file = new File([blob], 'baanschemas.png', { type: 'image/png' })
+
+        // Check if we can share this file
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'Baanschema\'s',
+            text: `🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}`
+          })
+          return
+        }
+      } catch (err) {
+        console.error('Error sharing image:', err)
+        // Fall through to text sharing
+      }
+    }
+
+    // Fallback: text-only sharing
     let message = `🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}\n\n`
 
     Object.keys(SCHEMAS).forEach(schemaKey => {
