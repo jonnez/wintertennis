@@ -14,7 +14,11 @@ import {
   CardActions,
   CircularProgress,
   Alert,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material'
 import CasinoIcon from '@mui/icons-material/Casino'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
@@ -38,6 +42,8 @@ export default function BaanschemaTab() {
   const [allResults, setAllResults] = useState([])
   const [selectedSchema, setSelectedSchema] = useState(null)
   const [rolling, setRolling] = useState(false)
+  const [imageDialog, setImageDialog] = useState(false)
+  const [generatedImageUrl, setGeneratedImageUrl] = useState(null)
 
   const dateKey = selectedDate ? formatDateKey(selectedDate) : null
   const players = playersData?.players || []
@@ -150,95 +156,44 @@ export default function BaanschemaTab() {
     setSavingSchedule(false)
   }
 
-  const handleSendWhatsApp = async () => {
-    const SCHEMAS = getSchemas(rankedParticipants.length)
+  const generateSchemaImage = (SCHEMAS) => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
 
-    // Check if Web Share API with files is supported
-    if (navigator.share && navigator.canShare) {
-      try {
-        // Create canvas to generate image
-        const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
+    // Set canvas size
+    const padding = 40
+    const schemaHeight = 200
+    const schemaCount = Object.keys(SCHEMAS).length
+    canvas.width = 800
+    canvas.height = padding * 2 + schemaCount * schemaHeight + 100
 
-        // Set canvas size
-        const padding = 40
-        const schemaHeight = 200
-        const schemaCount = Object.keys(SCHEMAS).length
-        canvas.width = 800
-        canvas.height = padding * 2 + schemaCount * schemaHeight + 100
+    // White background
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-        // White background
-        ctx.fillStyle = '#ffffff'
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
+    // Title
+    ctx.fillStyle = '#000000'
+    ctx.font = 'bold 32px Arial'
+    ctx.fillText(`🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}`, padding, padding + 30)
 
-        // Title
-        ctx.fillStyle = '#000000'
-        ctx.font = 'bold 32px Arial'
-        ctx.fillText(`🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}`, padding, padding + 30)
+    let yOffset = padding + 80
 
-        let yOffset = padding + 80
-
-        // Draw each schema
-        Object.keys(SCHEMAS).forEach((schemaKey, index) => {
-          const schema = SCHEMAS[schemaKey]
-
-          // Schema box with color
-          ctx.fillStyle = schema.color
-          ctx.fillRect(padding, yOffset, canvas.width - padding * 2, schemaHeight - 20)
-
-          // Schema title
-          ctx.fillStyle = schema.textColor
-          ctx.font = 'bold 24px Arial'
-          ctx.fillText(`${schema.name} - ${schema.number}`, padding + 20, yOffset + 35)
-
-          // Matches
-          ctx.font = '18px Arial'
-          let matchY = yOffset + 70
-          schema.matches.forEach(match => {
-            const team1 = match.team1.map(rank => {
-              const player = rankedParticipants[rank - 1]
-              return player ? player.name : `#${rank}`
-            }).join(' - ')
-
-            const team2 = match.team2.map(rank => {
-              const player = rankedParticipants[rank - 1]
-              return player ? player.name : `#${rank}`
-            }).join(' - ')
-
-            ctx.fillText(`Baan ${match.court}: ${team1} tegen ${team2}`, padding + 20, matchY)
-            matchY += 30
-          })
-
-          yOffset += schemaHeight
-        })
-
-        // Convert canvas to blob
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
-
-        const file = new File([blob], 'baanschemas.png', { type: 'image/png' })
-
-        // Check if we can share this file
-        if (navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: 'Baanschema\'s',
-            text: `🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}`
-          })
-          return
-        }
-      } catch (err) {
-        console.error('Error sharing image:', err)
-        // Fall through to text sharing
-      }
-    }
-
-    // Fallback: text-only sharing
-    let message = `🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}\n\n`
-
-    Object.keys(SCHEMAS).forEach(schemaKey => {
+    // Draw each schema
+    Object.keys(SCHEMAS).forEach((schemaKey, index) => {
       const schema = SCHEMAS[schemaKey]
-      message += `${schema.name} - ${schema.number}\n`
 
+      // Schema box with color
+      ctx.fillStyle = schema.color
+      ctx.fillRect(padding, yOffset, canvas.width - padding * 2, schemaHeight - 20)
+
+      // Schema title
+      ctx.fillStyle = schema.textColor
+      ctx.font = 'bold 24px Arial'
+      ctx.fillText(`${schema.name} - ${schema.number}`, padding + 20, yOffset + 35)
+
+      // Matches
+      ctx.font = '18px Arial'
+      let matchY = yOffset + 70
       schema.matches.forEach(match => {
         const team1 = match.team1.map(rank => {
           const player = rankedParticipants[rank - 1]
@@ -250,14 +205,69 @@ export default function BaanschemaTab() {
           return player ? player.name : `#${rank}`
         }).join(' - ')
 
-        message += `Baan ${match.court}: ${team1} tegen ${team2}\n`
+        ctx.fillText(`Baan ${match.court}: ${team1} tegen ${team2}`, padding + 20, matchY)
+        matchY += 30
       })
 
-      message += '\n'
+      yOffset += schemaHeight
     })
 
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, '_blank')
+    return canvas
+  }
+
+  const handleSendWhatsApp = async () => {
+    const SCHEMAS = getSchemas(rankedParticipants.length)
+
+    // Detect if we're on mobile
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
+    try {
+      const canvas = generateSchemaImage(SCHEMAS)
+
+      // Convert canvas to blob
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
+
+      // On mobile: try to share via Web Share API
+      if (isMobile && navigator.share && navigator.canShare) {
+        const file = new File([blob], 'baanschemas.png', { type: 'image/png' })
+
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Baanschema\'s',
+              text: `🎾 Baanschema's ${selectedDate ? formatDate(selectedDate, 'd MMMM') : ''}`
+            })
+            return
+          } catch (err) {
+            if (err.name === 'AbortError') {
+              // User cancelled, that's okay
+              return
+            }
+            throw err
+          }
+        }
+      }
+
+      // On desktop: show dialog with image for drag-and-drop
+      const url = URL.createObjectURL(blob)
+      setGeneratedImageUrl(url)
+      setImageDialog(true)
+
+      // Open WhatsApp Web
+      window.open('https://web.whatsapp.com/', '_blank')
+    } catch (err) {
+      console.error('Error generating/sharing image:', err)
+      alert('Fout bij maken van afbeelding. Probeer het opnieuw.')
+    }
+  }
+
+  const handleCloseImageDialog = () => {
+    setImageDialog(false)
+    if (generatedImageUrl) {
+      URL.revokeObjectURL(generatedImageUrl)
+      setGeneratedImageUrl(null)
+    }
   }
 
   if (!selectedDate) {
@@ -407,6 +417,54 @@ export default function BaanschemaTab() {
           )}
         </>
       )}
+
+      {/* Image Dialog for drag-and-drop */}
+      <Dialog
+        open={imageDialog}
+        onClose={handleCloseImageDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          Sleep de afbeelding naar WhatsApp Web
+        </DialogTitle>
+        <DialogContent>
+          <Alert severity="info" sx={{ mb: 2 }}>
+            WhatsApp Web is geopend in een nieuw venster. Sleep de onderstaande afbeelding naar een chat in WhatsApp Web.
+          </Alert>
+          {generatedImageUrl && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                p: 2,
+                border: '2px dashed #ccc',
+                borderRadius: 2,
+                backgroundColor: '#f5f5f5'
+              }}
+            >
+              <img
+                src={generatedImageUrl}
+                alt="Baanschema's"
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  cursor: 'grab'
+                }}
+                draggable={true}
+              />
+            </Box>
+          )}
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            💡 Tip: Klik op de afbeelding, houd vast en sleep naar WhatsApp Web.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseImageDialog}>
+            Sluiten
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }
