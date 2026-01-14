@@ -22,7 +22,7 @@ export default function StandTab() {
   const { seasonYear } = useCurrentSeason()
   const sundays = useSundays(seasonYear)
   const { data: playersData, loading: loadingPlayers } = useGitHubData(
-    seasonYear.toString(),
+    seasonYear ? seasonYear.toString() : null,
     'data/players.json'
   )
 
@@ -34,7 +34,7 @@ export default function StandTab() {
   // Load all results for all Sundays
   useEffect(() => {
     async function loadResults() {
-      if (!github || sundays.length === 0) return
+      if (!github || sundays.length === 0 || !seasonYear) return
 
       setLoadingResults(true)
       const results = []

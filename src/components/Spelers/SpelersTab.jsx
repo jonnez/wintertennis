@@ -38,7 +38,7 @@ const FREQUENCY_OPTIONS = [
 export default function SpelersTab() {
   const { seasonYear } = useCurrentSeason()
   const { data: playersData, loading, error, save } = useGitHubData(
-    seasonYear.toString(),
+    seasonYear ? seasonYear.toString() : null,
     'data/players.json'
   )
 

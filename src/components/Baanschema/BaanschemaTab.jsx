@@ -43,7 +43,7 @@ export default function BaanschemaTab() {
   // Load players
   useEffect(() => {
     async function loadPlayers() {
-      if (!github) return
+      if (!github || !seasonYear) return
 
       try {
         const file = await github.getFile(seasonYear.toString(), 'data/players.json')
@@ -61,7 +61,7 @@ export default function BaanschemaTab() {
   // Load schedule for selected date
   useEffect(() => {
     async function loadSchedule() {
-      if (!github || !dateKey) return
+      if (!github || !dateKey || !seasonYear) return
 
       setLoadingSchedule(true)
       try {
@@ -89,7 +89,7 @@ export default function BaanschemaTab() {
   // Load all results for ranking
   useEffect(() => {
     async function loadResults() {
-      if (!github || sundays.length === 0) return
+      if (!github || sundays.length === 0 || !seasonYear) return
 
       const results = []
       for (const sunday of sundays) {
@@ -122,7 +122,7 @@ export default function BaanschemaTab() {
   }
 
   const handleSave = async () => {
-    if (!github || !dateKey || !selectedSchema) return
+    if (!github || !dateKey || !selectedSchema || !seasonYear) return
 
     setSavingSchedule(true)
     try {

@@ -33,7 +33,7 @@ export default function DeelnemersTab() {
   const { selectedDate, setSelectedDate } = useSelectedSunday(sundays)
 
   const { data: playersData, loading: loadingPlayers } = useGitHubData(
-    seasonYear.toString(),
+    seasonYear ? seasonYear.toString() : null,
     'data/players.json'
   )
 
@@ -51,7 +51,7 @@ export default function DeelnemersTab() {
   // Load schedule for selected date
   useEffect(() => {
     async function loadSchedule() {
-      if (!github || !dateKey) return
+      if (!github || !dateKey || !seasonYear) return
 
       setLoadingSchedule(true)
       try {
@@ -82,7 +82,7 @@ export default function DeelnemersTab() {
   // Load all results to calculate catering counts
   useEffect(() => {
     async function loadResults() {
-      if (!github || sundays.length === 0) return
+      if (!github || sundays.length === 0 || !seasonYear) return
 
       const results = []
       for (const sunday of sundays) {
@@ -117,7 +117,7 @@ export default function DeelnemersTab() {
   }
 
   const handleSave = async () => {
-    if (!github || !dateKey) return
+    if (!github || !dateKey || !seasonYear) return
 
     setSavingSchedule(true)
     try {

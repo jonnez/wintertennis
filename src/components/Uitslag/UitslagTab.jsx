@@ -42,7 +42,7 @@ export default function UitslagTab() {
   // Load players
   useEffect(() => {
     async function loadPlayers() {
-      if (!github) return
+      if (!github || !seasonYear) return
 
       try {
         const file = await github.getFile(seasonYear.toString(), 'data/players.json')
@@ -60,7 +60,7 @@ export default function UitslagTab() {
   // Load all results for ranking
   useEffect(() => {
     async function loadAllResults() {
-      if (!github || sundays.length === 0) return
+      if (!github || sundays.length === 0 || !seasonYear) return
 
       const results = []
       for (const sunday of sundays) {
@@ -86,7 +86,7 @@ export default function UitslagTab() {
   // Load schedule and results for selected date
   useEffect(() => {
     async function loadData() {
-      if (!github || !dateKey) return
+      if (!github || !dateKey || !seasonYear) return
 
       setLoadingSchedule(true)
       setLoadingResults(true)
@@ -170,7 +170,7 @@ export default function UitslagTab() {
   }
 
   const handleSave = async () => {
-    if (!github || !dateKey) return
+    if (!github || !dateKey || !seasonYear) return
 
     // Validate total points
     const isValid = matches.every(match => {
