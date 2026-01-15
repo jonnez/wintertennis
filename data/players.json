@@ -3,22 +3,117 @@
     {
       "id": "Jan",
       "name": "Jan",
-      "frequency": "invaller"
+      "frequency": "oneven_weken"
     },
     {
-      "id": "a0cf44e4-a21d-4585-939f-898cd4beffb9",
+      "id": "Ivo",
       "name": "Ivo",
       "frequency": "oneven_weken"
     },
     {
-      "id": "3eec2a67-ccd2-4026-9dc2-3239dd656388",
+      "id": "Frank",
       "name": "Frank",
       "frequency": "invaller"
     },
     {
-      "id": "82d1b2f8-4c6a-4690-b0e7-09cbe2c1be11",
+      "id": "Jonne",
       "name": "Jonne",
       "frequency": "elke_week"
+    },
+    {
+      "id": "Remko",
+      "name": "Remko",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Michel",
+      "name": "Michel",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Anton",
+      "name": "Anton",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Bertus",
+      "name": "Bertus",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Leon",
+      "name": "Leon",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Grad",
+      "name": "Grad",
+      "frequency": "even_weken"
+    },
+    {
+      "id": "Gert-Jan",
+      "name": "Gert-Jan",
+      "frequency": "oneven_weken"
+    },
+    {
+      "id": "Paul v A",
+      "name": "Paul v A",
+      "frequency": "invaller"
+    },
+    {
+      "id": "Lennard",
+      "name": "Lennard",
+      "frequency": "invaller"
+    },
+    {
+      "id": "Jacob",
+      "name": "Jacob",
+      "frequency": "invaller"
+    },
+    {
+      "id": "Evert-Jan",
+      "name": "Evert-Jan",
+      "frequency": "invaller"
+    },
+    {
+      "id": "Jaap v M",
+      "name": "Jaap v M",
+      "frequency": "invaller"
+    },
+    {
+      "id": "Paul v B",
+      "name": "Paul v B",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Marc",
+      "name": "Marc",
+      "frequency": "oneven_weken"
+    },
+    {
+      "id": "Rob W",
+      "name": "Rob W",
+      "frequency": "even_weken"
+    },
+    {
+      "id": "Stefano",
+      "name": "Stefano",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Marco",
+      "name": "Marco",
+      "frequency": "even_weken"
+    },
+    {
+      "id": "Jaap v W",
+      "name": "Jaap v W",
+      "frequency": "invaller"
+    },
+    {
+      "id": "Remco van Dam",
+      "name": "Remco v D",
+      "frequency": "invaller"
     }
   ]
 }
