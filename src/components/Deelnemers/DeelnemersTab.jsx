@@ -47,9 +47,15 @@ export default function DeelnemersTab() {
   const [selectDialog, setSelectDialog] = useState(false)
   const [selectedParticipants, setSelectedParticipants] = useState([])
   const [cateringPerson, setCateringPerson] = useState(null)
+  const [weekOverride, setWeekOverride] = useState('auto') // 'auto', 'even', 'oneven'
 
   const players = playersData?.players || []
   const dateKey = selectedDate ? formatDateKey(selectedDate) : null
+
+  // Reset week override when date changes
+  useEffect(() => {
+    setWeekOverride('auto')
+  }, [dateKey])
 
   // Load schedule for selected date
   useEffect(() => {
@@ -72,7 +78,14 @@ export default function DeelnemersTab() {
 
           // Auto-select players based on frequency
           if (players.length > 0) {
-            const evenWeek = isEvenWeek(selectedDate, sundaysWithData)
+            // Determine if it's an even week based on override or automatic calculation
+            let evenWeek
+            if (weekOverride === 'auto') {
+              evenWeek = isEvenWeek(selectedDate, sundaysWithData)
+            } else {
+              evenWeek = weekOverride === 'even'
+            }
+
             const autoSelectedPlayers = players
               .filter(player => {
                 if (player.frequency === 'elke_week') return true
@@ -95,7 +108,14 @@ export default function DeelnemersTab() {
 
         // Auto-select players based on frequency
         if (players.length > 0) {
-          const evenWeek = isEvenWeek(selectedDate, sundaysWithData)
+          // Determine if it's an even week based on override or automatic calculation
+          let evenWeek
+          if (weekOverride === 'auto') {
+            evenWeek = isEvenWeek(selectedDate, sundaysWithData)
+          } else {
+            evenWeek = weekOverride === 'even'
+          }
+
           const autoSelectedPlayers = players
             .filter(player => {
               if (player.frequency === 'elke_week') return true
@@ -116,7 +136,7 @@ export default function DeelnemersTab() {
     }
 
     loadSchedule()
-  }, [github, dateKey, seasonYear, selectedDate, players, sundaysWithData])
+  }, [github, dateKey, seasonYear, selectedDate, players, sundaysWithData, weekOverride])
 
   // Load all results to calculate catering counts and track sundays with data
   useEffect(() => {
@@ -184,6 +204,7 @@ export default function DeelnemersTab() {
       )
 
       setScheduleData(newSchedule)
+      setWeekOverride('auto') // Reset override after saving
       setSelectDialog(false)
     } catch (err) {
       alert('Fout bij opslaan: ' + err.message)
@@ -246,6 +267,28 @@ export default function DeelnemersTab() {
           ))}
         </Select>
       </FormControl>
+
+      {/* Week Override Dropdown - only visible when no saved data exists */}
+      {scheduleData === null && !loadingSchedule && (
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Week Type Override</InputLabel>
+          <Select
+            value={weekOverride}
+            onChange={(e) => setWeekOverride(e.target.value)}
+            label="Week Type Override"
+          >
+            <MenuItem value="auto">
+              Automatisch {selectedDate && `(${isEvenWeek(selectedDate, sundaysWithData) ? 'Even' : 'Oneven'} week)`}
+            </MenuItem>
+            <MenuItem value="even">Even week</MenuItem>
+            <MenuItem value="oneven">Oneven week</MenuItem>
+          </Select>
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 1, ml: 1 }}>
+            Pas aan welke spelers automatisch worden voorgeselecteerd op basis van hun frequentie.
+            Deze instelling verdwijnt zodra je de deelnemers opslaat.
+          </Typography>
+        </FormControl>
+      )}
 
       {loadingSchedule ? (
         <Box display="flex" justifyContent="center" p={4}>
