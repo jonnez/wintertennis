@@ -43,6 +43,7 @@ export default function DeelnemersTab() {
   const [loadingSchedule, setLoadingSchedule] = useState(false)
   const [savingSchedule, setSavingSchedule] = useState(false)
   const [allResults, setAllResults] = useState([])
+  const [sundaysWithData, setSundaysWithData] = useState([])
   const [selectDialog, setSelectDialog] = useState(false)
   const [selectedParticipants, setSelectedParticipants] = useState([])
   const [cateringPerson, setCateringPerson] = useState(null)
@@ -71,7 +72,7 @@ export default function DeelnemersTab() {
 
           // Auto-select players based on frequency
           if (players.length > 0) {
-            const evenWeek = isEvenWeek(selectedDate, sundays)
+            const evenWeek = isEvenWeek(selectedDate, sundaysWithData)
             const autoSelectedPlayers = players
               .filter(player => {
                 if (player.frequency === 'elke_week') return true
@@ -94,7 +95,7 @@ export default function DeelnemersTab() {
 
         // Auto-select players based on frequency
         if (players.length > 0) {
-          const evenWeek = isEvenWeek(selectedDate, sundays)
+          const evenWeek = isEvenWeek(selectedDate, sundaysWithData)
           const autoSelectedPlayers = players
             .filter(player => {
               if (player.frequency === 'elke_week') return true
@@ -115,14 +116,15 @@ export default function DeelnemersTab() {
     }
 
     loadSchedule()
-  }, [github, dateKey, seasonYear, selectedDate, players, sundays])
+  }, [github, dateKey, seasonYear, selectedDate, players, sundaysWithData])
 
-  // Load all results to calculate catering counts
+  // Load all results to calculate catering counts and track sundays with data
   useEffect(() => {
     async function loadResults() {
       if (!github || sundays.length === 0 || !seasonYear) return
 
       const results = []
+      const sundaysWithSchedule = []
       for (const sunday of sundays) {
         try {
           const key = formatDateKey(sunday)
@@ -130,17 +132,24 @@ export default function DeelnemersTab() {
             seasonYear.toString(),
             `data/schedule-${key}.json`
           )
-          if (file && file.content && file.content.cateringBy) {
-            results.push({
-              date: key,
-              cateringBy: file.content.cateringBy
-            })
+          if (file && file.content) {
+            // Track this sunday has schedule data
+            sundaysWithSchedule.push(sunday)
+
+            // Also track catering if present
+            if (file.content.cateringBy) {
+              results.push({
+                date: key,
+                cateringBy: file.content.cateringBy
+              })
+            }
           }
         } catch (err) {
           // Skip
         }
       }
       setAllResults(results)
+      setSundaysWithData(sundaysWithSchedule)
     }
 
     loadResults()

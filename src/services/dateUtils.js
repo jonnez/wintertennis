@@ -84,30 +84,26 @@ export function getCurrentSeasonYear() {
 // Check if date is in even/odd week based on play day sequence
 // Week 1 (first play day) = odd, Week 2 (second play day) = even, etc.
 // This ensures fairness regardless of holidays/vacations
-export function isEvenWeek(date, sundays) {
-  if (!sundays || sundays.length === 0) return false
+// The week number is determined by counting how many play days (sundays with data)
+// have occurred before this date, plus 1
+export function isEvenWeek(date, sundaysWithData) {
+  // Count how many play days occurred before this date
+  const dateTime = date.getTime()
+  const priorPlayDays = sundaysWithData.filter(sunday => sunday.getTime() < dateTime).length
 
-  // Find the index (0-based) of this date in the sundays array
-  const dateKey = formatDateKey(date)
-  const weekIndex = sundays.findIndex(sunday => formatDateKey(sunday) === dateKey)
-
-  if (weekIndex === -1) return false
-
-  // Week 1 is index 0 (odd), Week 2 is index 1 (even), etc.
-  // So even weeks have odd indices
-  return (weekIndex + 1) % 2 === 0
+  // This date will be play day number (priorPlayDays + 1)
+  // Week 1 is odd, week 2 is even, etc.
+  const weekNumber = priorPlayDays + 1
+  return weekNumber % 2 === 0
 }
 
-export function isOddWeek(date, sundays) {
-  if (!sundays || sundays.length === 0) return false
+export function isOddWeek(date, sundaysWithData) {
+  // Count how many play days occurred before this date
+  const dateTime = date.getTime()
+  const priorPlayDays = sundaysWithData.filter(sunday => sunday.getTime() < dateTime).length
 
-  // Find the index (0-based) of this date in the sundays array
-  const dateKey = formatDateKey(date)
-  const weekIndex = sundays.findIndex(sunday => formatDateKey(sunday) === dateKey)
-
-  if (weekIndex === -1) return false
-
-  // Week 1 is index 0 (odd), Week 2 is index 1 (even), etc.
-  // So odd weeks have even indices
-  return (weekIndex + 1) % 2 === 1
+  // This date will be play day number (priorPlayDays + 1)
+  // Week 1 is odd, week 2 is even, etc.
+  const weekNumber = priorPlayDays + 1
+  return weekNumber % 2 === 1
 }
