@@ -81,17 +81,33 @@ export function getCurrentSeasonYear() {
   return now.getFullYear()
 }
 
-// Check if date is in even/odd week
-export function getWeekNumber(date) {
-  const onejan = new Date(date.getFullYear(), 0, 1)
-  const millisecsInDay = 86400000
-  return Math.ceil((((date - onejan) / millisecsInDay) + onejan.getDay() + 1) / 7)
+// Check if date is in even/odd week based on play day sequence
+// Week 1 (first play day) = odd, Week 2 (second play day) = even, etc.
+// This ensures fairness regardless of holidays/vacations
+export function isEvenWeek(date, sundays) {
+  if (!sundays || sundays.length === 0) return false
+
+  // Find the index (0-based) of this date in the sundays array
+  const dateKey = formatDateKey(date)
+  const weekIndex = sundays.findIndex(sunday => formatDateKey(sunday) === dateKey)
+
+  if (weekIndex === -1) return false
+
+  // Week 1 is index 0 (odd), Week 2 is index 1 (even), etc.
+  // So even weeks have odd indices
+  return (weekIndex + 1) % 2 === 0
 }
 
-export function isEvenWeek(date) {
-  return getWeekNumber(date) % 2 === 0
-}
+export function isOddWeek(date, sundays) {
+  if (!sundays || sundays.length === 0) return false
 
-export function isOddWeek(date) {
-  return getWeekNumber(date) % 2 === 1
+  // Find the index (0-based) of this date in the sundays array
+  const dateKey = formatDateKey(date)
+  const weekIndex = sundays.findIndex(sunday => formatDateKey(sunday) === dateKey)
+
+  if (weekIndex === -1) return false
+
+  // Week 1 is index 0 (odd), Week 2 is index 1 (even), etc.
+  // So odd weeks have even indices
+  return (weekIndex + 1) % 2 === 1
 }

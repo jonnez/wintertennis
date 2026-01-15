@@ -71,7 +71,7 @@ export default function DeelnemersTab() {
 
           // Auto-select players based on frequency
           if (players.length > 0) {
-            const evenWeek = isEvenWeek(selectedDate)
+            const evenWeek = isEvenWeek(selectedDate, sundays)
             const autoSelectedPlayers = players
               .filter(player => {
                 if (player.frequency === 'elke_week') return true
@@ -94,7 +94,7 @@ export default function DeelnemersTab() {
 
         // Auto-select players based on frequency
         if (players.length > 0) {
-          const evenWeek = isEvenWeek(selectedDate)
+          const evenWeek = isEvenWeek(selectedDate, sundays)
           const autoSelectedPlayers = players
             .filter(player => {
               if (player.frequency === 'elke_week') return true
@@ -115,7 +115,7 @@ export default function DeelnemersTab() {
     }
 
     loadSchedule()
-  }, [github, dateKey, seasonYear, selectedDate, players])
+  }, [github, dateKey, seasonYear, selectedDate, players, sundays])
 
   // Load all results to calculate catering counts
   useEffect(() => {
