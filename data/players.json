@@ -119,6 +119,11 @@
       "id": "Paul J",
       "name": "Paul J",
       "frequency": "even_weken"
+    },
+    {
+      "id": "Harald",
+      "name": "Harald",
+      "frequency": "invaller"
     }
   ]
 }
