@@ -1,9 +1,64 @@
 {
   "players": [
     {
+      "id": "Jonne",
+      "name": "Jonne",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Bertus",
+      "name": "Bertus",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Anton",
+      "name": "Anton",
+      "frequency": "elke_week"
+    },
+    {
       "id": "Jan",
       "name": "Jan",
       "frequency": "oneven_weken"
+    },
+    {
+      "id": "Remko",
+      "name": "Remko",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Leon",
+      "name": "Leon",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Paul v B",
+      "name": "Paul v B",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Grad",
+      "name": "Grad",
+      "frequency": "even_weken"
+    },
+    {
+      "id": "Michel",
+      "name": "Michel",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Marco",
+      "name": "Marco",
+      "frequency": "even_weken"
+    },
+    {
+      "id": "Stefano",
+      "name": "Stefano",
+      "frequency": "elke_week"
+    },
+    {
+      "id": "Rob W",
+      "name": "Rob W",
+      "frequency": "even_weken"
     },
     {
       "id": "Ivo",
@@ -14,41 +69,6 @@
       "id": "Frank",
       "name": "Frank",
       "frequency": "invaller"
-    },
-    {
-      "id": "Jonne",
-      "name": "Jonne",
-      "frequency": "elke_week"
-    },
-    {
-      "id": "Remko",
-      "name": "Remko",
-      "frequency": "elke_week"
-    },
-    {
-      "id": "Michel",
-      "name": "Michel",
-      "frequency": "elke_week"
-    },
-    {
-      "id": "Anton",
-      "name": "Anton",
-      "frequency": "elke_week"
-    },
-    {
-      "id": "Bertus",
-      "name": "Bertus",
-      "frequency": "elke_week"
-    },
-    {
-      "id": "Leon",
-      "name": "Leon",
-      "frequency": "elke_week"
-    },
-    {
-      "id": "Grad",
-      "name": "Grad",
-      "frequency": "even_weken"
     },
     {
       "id": "Gert-Jan",
@@ -81,29 +101,9 @@
       "frequency": "invaller"
     },
     {
-      "id": "Paul v B",
-      "name": "Paul v B",
-      "frequency": "elke_week"
-    },
-    {
       "id": "Marc",
       "name": "Marc",
       "frequency": "oneven_weken"
-    },
-    {
-      "id": "Rob W",
-      "name": "Rob W",
-      "frequency": "even_weken"
-    },
-    {
-      "id": "Stefano",
-      "name": "Stefano",
-      "frequency": "elke_week"
-    },
-    {
-      "id": "Marco",
-      "name": "Marco",
-      "frequency": "even_weken"
     },
     {
       "id": "Jaap v W",
