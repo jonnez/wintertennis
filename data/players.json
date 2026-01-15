@@ -1,9 +1,9 @@
 {
-    "players": [
-      {
-        "id": "Jan",
-        "name": "Jan",
-        "frequency": "elke_week"
-      }
-    ]
+  "players": [
+    {
+      "id": "Jan",
+      "name": "Jan",
+      "frequency": "invaller"
+    }
+  ]
 }
