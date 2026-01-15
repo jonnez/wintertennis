@@ -4,6 +4,11 @@
       "id": "Jan",
       "name": "Jan",
       "frequency": "invaller"
+    },
+    {
+      "id": "a0cf44e4-a21d-4585-939f-898cd4beffb9",
+      "name": "Ivo",
+      "frequency": "oneven_weken"
     }
   ]
 }
