@@ -1,0 +1,27 @@
+{
+    "date": "2025-09-21",
+    "matches": [
+      {
+        "court": 1,
+        "team1": {
+          "players": ["Paul v B", "Anton"],
+          "points": 2
+        },
+        "team2": {
+          "players": ["Michel", "Jonne"],
+          "points": 0
+        }
+      },
+      {
+        "court": 2,
+        "team1": {
+          "players": ["Rob W", "Bertus"],
+          "points": 2
+        },
+        "team2": {
+          "players": ["Remko", "Marco"],
+          "points": 0
+        }
+      }
+    ]
+}
