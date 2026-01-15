@@ -9,6 +9,11 @@
       "id": "a0cf44e4-a21d-4585-939f-898cd4beffb9",
       "name": "Ivo",
       "frequency": "oneven_weken"
+    },
+    {
+      "id": "3eec2a67-ccd2-4026-9dc2-3239dd656388",
+      "name": "Frank",
+      "frequency": "invaller"
     }
   ]
 }
