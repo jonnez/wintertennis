@@ -114,6 +114,11 @@
       "id": "Remco van Dam",
       "name": "Remco v D",
       "frequency": "invaller"
+    },
+    {
+      "id": "Paul J",
+      "name": "Paul J",
+      "frequency": "even_weken"
     }
   ]
 }
